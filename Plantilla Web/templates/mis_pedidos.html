@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block titulo %}Mis Pedidos{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+
+  <h1 class="titulo-seccion">Mis Pedidos</h1>
+
+  {% if pedidos %}
+    <table class="tabla-admin">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Fecha</th>
+          <th>Total</th>
+          <th>Pago</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in pedidos %}
+        <tr>
+          <td><strong>{{ p.numero_pedido }}</strong></td>
+          <td>{{ p.creado_en.strftime('%d/%m/%Y %H:%M') }}</td>
+          <td>${{ "%.2f"|format(p.total) }}</td>
+          <td>{{ p.metodo_pago }}</td>
+          <td>
+            <span class="badge badge-{{ p.estado }}">
+              {{ p.estado_info.label }}
+            </span>
+          </td>
+          <td>
+            <a href="{{ url_for('detalle_pedido', numero=p.numero_pedido) }}"
+               class="btn btn-secundario" style="font-size:.8rem;padding:.3rem .8rem;">
+              Ver
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+    <div class="vacio">
+      <div class="vacio-icono">📋</div>
+      <p>Aún no tienes pedidos.</p>
+      <a href="{{ url_for('inicio') }}" class="btn btn-primario">Pedir ahora</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

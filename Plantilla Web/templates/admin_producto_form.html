@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block titulo %}{% if prod %}Editar{% else %}Nuevo{% endif %} Producto{% endblock %}
+
+{% block contenido %}
+<div class="contenedor" style="max-width:600px;">
+
+  <h1 class="titulo-seccion">
+    {% if prod %}Editar: {{ prod.nombre }}{% else %}Nuevo Producto{% endif %}
+  </h1>
+
+  <div style="background:var(--color-superficie);border-radius:var(--radio);padding:2rem;box-shadow:var(--sombra);">
+    <form method="POST" enctype="multipart/form-data">
+
+      <!-- Nombre -->
+      <div class="form-grupo">
+        <label for="nombre">Nombre del producto *</label>
+        <input type="text" id="nombre" name="nombre"
+               value="{{ prod.nombre if prod else '' }}"
+               required placeholder="Ej: Torta de milanesa">
+      </div>
+
+      <!-- Descripción -->
+      <div class="form-grupo">
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion"
+                  placeholder="¿Qué lleva? ¿Cómo se prepara?">{{ prod.descripcion if prod else '' }}</textarea>
+      </div>
+
+      <!-- Precio y oferta en la misma fila -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-grupo">
+          <label for="precio">Precio normal *</label>
+          <input type="number" id="precio" name="precio"
+                 value="{{ prod.precio if prod else '' }}"
+                 step="0.01" min="0" required placeholder="0.00">
+        </div>
+        <div class="form-grupo">
+          <label for="precio_oferta">Precio en oferta</label>
+          <input type="number" id="precio_oferta" name="precio_oferta"
+                 value="{{ prod.precio_oferta if prod and prod.precio_oferta else '' }}"
+                 step="0.01" min="0" placeholder="Dejar vacío si no aplica">
+        </div>
+      </div>
+
+      <!-- Categoría -->
+      <div class="form-grupo">
+        <label for="categoria_id">Categoría</label>
+        <select id="categoria_id" name="categoria_id">
+          <option value="">— Sin categoría —</option>
+          {% for cat in cats %}
+            <option value="{{ cat.id }}"
+                    {% if prod and prod.categoria_id == cat.id %}selected{% endif %}>
+              {{ cat.nombre }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Stock y tiempo -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-grupo">
+          <label for="stock">Stock disponible</label>
+          <input type="number" id="stock" name="stock"
+                 value="{{ prod.stock if prod else 99 }}"
+                 min="0">
+        </div>
+        <div class="form-grupo">
+          <label for="tiempo_prep">Tiempo de preparación (min)</label>
+          <input type="number" id="tiempo_prep" name="tiempo_prep"
+                 value="{{ prod.tiempo_prep if prod else 15 }}"
+                 min="0">
+        </div>
+      </div>
+
+      <!-- Imagen -->
+      <div class="form-grupo">
+        <label for="imagen">Imagen del producto</label>
+        <input type="file" id="imagen" name="imagen" accept="image/*">
+        {% if prod and prod.imagen %}
+          <p style="font-size:.8rem;color:var(--color-suave);margin-top:.3rem;">
+            Imagen actual: {{ prod.imagen }}
+          </p>
+        {% endif %}
+      </div>
+
+      <!-- Checkboxes -->
+      <div style="display:flex;gap:2rem;margin-bottom:1.2rem;">
+        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;">
+          <input type="checkbox" name="destacado"
+                 {% if prod and prod.destacado %}checked{% endif %}>
+          Producto destacado
+        </label>
+        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;">
+          <input type="checkbox" name="activo"
+                 {% if not prod or prod.activo %}checked{% endif %}>
+          Activo (visible en menú)
+        </label>
+      </div>
+
+      <!-- Botones -->
+      <div style="display:flex;gap:.8rem;">
+        <button type="submit" class="btn btn-primario" style="flex:1;">
+          Guardar producto
+        </button>
+        <a href="{{ url_for('admin_productos') }}"
+           class="btn btn-secundario" style="flex:1;text-align:center;">
+          Cancelar
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+{% endblock %}

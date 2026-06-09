@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}Pago Exitoso{% endblock %}
+
+{% block contenido %}
+<div class="contenedor" style="max-width:500px;text-align:center;padding-top:3rem;">
+
+  <div style="font-size:4rem;margin-bottom:1rem;">✅</div>
+  <h1 style="font-size:1.8rem;font-weight:700;margin-bottom:.5rem;">¡Pago confirmado!</h1>
+  <p style="color:var(--color-suave);margin-bottom:1.5rem;">
+    Tu pedido <strong>{{ pedido.numero_pedido }}</strong> fue recibido
+    y está siendo procesado.
+  </p>
+
+  <div style="background:var(--color-superficie);border-radius:var(--radio);padding:1.5rem;box-shadow:var(--sombra);margin-bottom:1.5rem;">
+    <div class="resumen-fila resumen-total">
+      <span>Total pagado</span>
+      <span>${{ "%.2f"|format(pedido.total) }}</span>
+    </div>
+  </div>
+
+  <a href="{{ url_for('mis_pedidos') }}" class="btn btn-primario">Ver mis pedidos</a>
+  <a href="{{ url_for('inicio') }}"
+     class="btn btn-secundario"
+     style="display:block;margin-top:.5rem;text-align:center;">
+    Volver al menú
+  </a>
+
+</div>
+{% endblock %}

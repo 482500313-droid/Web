@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block titulo %}Panel Admin{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+
+  <h1 class="titulo-seccion">Panel de Administrador</h1>
+
+  <!-- ── Tarjetas de estadísticas ── -->
+  <div class="stats-grid">
+    <div class="stat-tarjeta">
+      <div class="stat-numero">{{ total_pedidos }}</div>
+      <div class="stat-label">Pedidos totales</div>
+    </div>
+    <div class="stat-tarjeta">
+      <div class="stat-numero">{{ pendientes }}</div>
+      <div class="stat-label">Pedidos pendientes</div>
+    </div>
+    <div class="stat-tarjeta">
+      <div class="stat-numero">{{ total_productos }}</div>
+      <div class="stat-label">Productos activos</div>
+    </div>
+  </div>
+
+  <!-- ── Enlace rápido a productos ── -->
+  <div style="margin-bottom:1.5rem;">
+    <a href="{{ url_for('admin_productos') }}" class="btn btn-primario" style="width:auto;display:inline-block;">
+      Gestionar productos
+    </a>
+  </div>
+
+  <!-- ── Tabla de últimos pedidos ── -->
+  <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem;">Últimos pedidos</h2>
+
+  {% if pedidos %}
+  <div style="overflow-x:auto;">
+    <table class="tabla-admin">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Cliente</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Cambiar estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in pedidos %}
+        <tr>
+          <td>
+            <a href="{{ url_for('detalle_pedido', numero=p.numero_pedido) }}">
+              {{ p.numero_pedido }}
+            </a>
+          </td>
+          <td>{{ p.cliente.nombre }}</td>
+          <td>${{ "%.2f"|format(p.total) }}</td>
+          <td>
+            <span class="badge badge-{{ p.estado }}">
+              {{ p.estado_info.label }}
+            </span>
+          </td>
+          <td>
+            <!-- Formulario pequeño para cambiar el estado -->
+            <form method="POST"
+                  action="{{ url_for('actualizar_estado_pedido', pid=p.id) }}"
+                  style="display:flex;gap:.4rem;">
+              <select name="estado" style="padding:.25rem .4rem;border:1px solid var(--color-borde);border-radius:6px;font-size:.8rem;">
+                <option value="pendiente"      {% if p.estado=='pendiente'      %}selected{% endif %}>Pendiente</option>
+                <option value="confirmado"     {% if p.estado=='confirmado'     %}selected{% endif %}>Confirmado</option>
+                <option value="en_preparacion" {% if p.estado=='en_preparacion' %}selected{% endif %}>Preparando</option>
+                <option value="listo"          {% if p.estado=='listo'          %}selected{% endif %}>Listo</option>
+                <option value="entregado"      {% if p.estado=='entregado'      %}selected{% endif %}>Entregado</option>
+                <option value="cancelado"      {% if p.estado=='cancelado'      %}selected{% endif %}>Cancelado</option>
+              </select>
+              <button type="submit" class="btn btn-exito" style="padding:.25rem .6rem;font-size:.8rem;">
+                OK
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="vacio">
+      <div class="vacio-icono">📋</div>
+      <p>No hay pedidos todavía.</p>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block titulo %}Pedido {{ pedido.numero_pedido }}{% endblock %}
+
+{% block contenido %}
+<div class="contenedor" style="max-width:700px;">
+
+  <h1 class="titulo-seccion">Pedido {{ pedido.numero_pedido }}</h1>
+
+  <!-- ── Información del pedido ── -->
+  <div style="background:var(--color-superficie);border-radius:var(--radio);padding:1.5rem;box-shadow:var(--sombra);margin-bottom:1.5rem;">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <span>
+        <strong>Estado:</strong>
+        <span class="badge badge-{{ pedido.estado }}" style="margin-left:.5rem;">
+          {{ pedido.estado_info.label }}
+        </span>
+      </span>
+      <span style="color:var(--color-suave);font-size:.85rem;">
+        {{ pedido.creado_en.strftime('%d/%m/%Y a las %H:%M') }}
+      </span>
+    </div>
+
+    <p><strong>Método de pago:</strong> {{ pedido.metodo_pago }}</p>
+    {% if pedido.notas %}
+      <p style="margin-top:.5rem;"><strong>Notas:</strong> {{ pedido.notas }}</p>
+    {% endif %}
+  </div>
+
+  <!-- ── Detalle de los productos ── -->
+  <table class="tabla-admin" style="margin-bottom:1.5rem;">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in pedido.detalles %}
+      <tr>
+        <td>{{ d.nombre_snap }}</td>
+        <td>{{ d.cantidad }}</td>
+        <td>${{ "%.2f"|format(d.precio_unit) }}</td>
+        <td>${{ "%.2f"|format(d.subtotal) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Total -->
+  <div style="text-align:right;font-size:1.15rem;font-weight:700;margin-bottom:1.5rem;">
+    Total: ${{ "%.2f"|format(pedido.total) }}
+  </div>
+
+  <a href="{{ url_for('mis_pedidos') }}" class="btn btn-secundario">
+    ← Volver a mis pedidos
+  </a>
+
+</div>
+{% endblock %}

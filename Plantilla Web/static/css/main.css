@@ -1,0 +1,844 @@
+/* ============================================================
+   main.css — La Lonchería · Rediseño v2
+   Paleta verde natural, inspirada en el diseño del cliente
+   ============================================================ */
+
+/* ── 1. Variables ───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Paleta principal */
+  --verde-navbar: #607a30;
+  /* fondo del navbar */
+  --verde-oscuro: #5a7433;
+  /* botones, barras del carrito */
+  --verde-medio: #6b8c3a;
+  --verde-claro: #edf8d4;
+  /* fondo de la página — igual que la imagen */
+  --verde-muy-claro: #f2fae0;
+  /* fondo alterno */
+  --verde-boton: #5a7433;
+  /* botones de acción */
+
+  /* Texto */
+  --texto-oscuro: #1a1a1a;
+  --texto-blanco: #ffffff;
+  --texto-gris: #6b7280;
+  --texto-gris-claro: #9ca3af;
+
+  /* Bordes y sombras */
+  --borde-negro: #1a1a1a;
+  --borde-suave: #d1d5db;
+  --sombra: 0 2px 12px rgba(0, 0, 0, .10);
+  --sombra-tarjeta: 0 4px 20px rgba(0, 0, 0, .12);
+
+  /* Utilidades */
+  --radio: 10px;
+  --radio-sm: 6px;
+  --radio-pill: 50px;
+  --fuente: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  /* Estados */
+  --exito: #16a34a;
+  --error: #dc2626;
+  --info: #2563eb;
+}
+
+/* ── 2. Reset ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--fuente);
+  background-color: var(--verde-claro);
+  background-image: url("/static/flor_fondo.png");
+  background-repeat: no-repeat;
+  background-position: center 45%;
+  background-size: 90% auto;
+  background-attachment: local;
+  color: var(--texto-oscuro);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ── 3. Navbar ──────────────────────────────────────────────── */
+.navbar {
+  background: var(--verde-navbar);
+  padding: .9rem 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+  border-radius: 0 0 14px 14px;
+}
+
+/* Logo con caja redondeada negra */
+.navbar-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: var(--texto-oscuro);
+  color: var(--texto-blanco);
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: .45rem 1.1rem;
+  border-radius: 50px;
+  letter-spacing: .01em;
+  transition: opacity .2s;
+}
+
+.navbar-marca:hover {
+  opacity: .88;
+}
+
+/* Lado derecho del navbar */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-links a {
+  color: var(--texto-oscuro);
+  font-size: .88rem;
+  font-weight: 600;
+  padding: .35rem .8rem;
+  border-radius: 20px;
+  transition: background .2s;
+}
+
+.navbar-links a:hover {
+  background: rgba(0, 0, 0, .1);
+}
+
+/* Botón usuario con borde */
+.btn-usuario {
+  background: transparent;
+  border: 2px solid var(--texto-oscuro) !important;
+  color: var(--texto-oscuro) !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  padding: .35rem 1rem !important;
+  font-size: .88rem !important;
+}
+
+.btn-usuario:hover {
+  background: rgba(0, 0, 0, .08) !important;
+}
+
+/* Botón carrito: ícono SVG */
+.btn-carrito {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  color: var(--texto-oscuro);
+  font-size: 1.5rem;
+  border-radius: 50%;
+  transition: background .2s;
+}
+
+.btn-carrito:hover {
+  background: rgba(0, 0, 0, .1);
+}
+
+/* Contador del carrito */
+#cartCount {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--texto-oscuro);
+  color: var(--texto-blanco);
+  border-radius: 50%;
+  font-size: .62rem;
+  font-weight: 800;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ── 4. Mensajes flash ──────────────────────────────────────── */
+.flashes {
+  max-width: 960px;
+  margin: 1rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.flash {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .7rem 1rem;
+  border-radius: var(--radio);
+  margin-bottom: .5rem;
+  font-size: .9rem;
+  font-weight: 500;
+}
+
+.flash-success {
+  background: #dcfce7;
+  color: var(--exito);
+  border: 1px solid #bbf7d0;
+}
+
+.flash-error {
+  background: #fee2e2;
+  color: var(--error);
+  border: 1px solid #fecaca;
+}
+
+.flash-info {
+  background: #dbeafe;
+  color: var(--info);
+  border: 1px solid #bfdbfe;
+}
+
+.flash button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: inherit;
+  opacity: .6;
+}
+
+/* ── 5. Contenedor principal ────────────────────────────────── */
+.contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.8rem 1.5rem;
+}
+
+/* ── 6. Títulos de sección ──────────────────────────────────── */
+.titulo-seccion {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin-bottom: 1.4rem;
+  color: var(--texto-oscuro);
+  letter-spacing: -.02em;
+}
+
+/* ── 7. Filtros de categoría ────────────────────────────────── */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-bottom: 1.8rem;
+}
+
+.filtro-btn {
+  padding: .42rem 1.1rem;
+  border: 2px solid var(--borde-negro);
+  border-radius: 8px;
+  /* rectangular con ligero radio */
+  background: var(--texto-blanco);
+  cursor: pointer;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--texto-oscuro);
+  text-decoration: none;
+  transition: background .18s, color .18s, border-color .18s;
+}
+
+.filtro-btn:hover,
+.filtro-btn.activo {
+  background: var(--texto-oscuro);
+  color: var(--texto-blanco);
+  text-decoration: none;
+}
+
+/* ── 8. Cuadrícula de productos ─────────────────────────────── */
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+/* ── 9. Tarjeta de producto ─────────────────────────────────── */
+.tarjeta {
+  background: var(--texto-blanco);
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, .06);
+  transition: transform .2s, box-shadow .2s;
+}
+
+.tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-tarjeta);
+}
+
+.tarjeta-imagen {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: #f0f7e0;
+}
+
+.tarjeta-cuerpo {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta-nombre {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: .3rem;
+  color: var(--texto-oscuro);
+}
+
+.tarjeta-desc {
+  font-size: .82rem;
+  color: var(--texto-gris);
+  flex: 1;
+  margin-bottom: .8rem;
+}
+
+.tarjeta-precio {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--verde-oscuro);
+  margin-bottom: .7rem;
+}
+
+.precio-original {
+  font-size: .8rem;
+  color: var(--texto-gris-claro);
+  text-decoration: line-through;
+  margin-left: .4rem;
+  font-weight: 400;
+}
+
+/* ── 10. Botones generales ──────────────────────────────────── */
+.btn {
+  display: inline-block;
+  padding: .55rem 1.3rem;
+  border-radius: var(--radio-sm);
+  font-weight: 700;
+  font-size: .9rem;
+  border: none;
+  cursor: pointer;
+  transition: filter .18s, transform .12s;
+  text-align: center;
+  font-family: var(--fuente);
+  letter-spacing: .01em;
+}
+
+.btn:hover {
+  filter: brightness(.92);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primario {
+  background: var(--verde-boton);
+  color: var(--texto-blanco);
+  width: 100%;
+}
+
+.btn-secundario {
+  background: var(--texto-blanco);
+  color: var(--texto-oscuro);
+  border: 2px solid var(--borde-negro);
+  width: 100%;
+}
+
+.btn-peligro {
+  background: var(--error);
+  color: var(--texto-blanco);
+}
+
+.btn-exito {
+  background: var(--exito);
+  color: var(--texto-blanco);
+}
+
+/* Variante pequeña */
+.btn-sm {
+  padding: .3rem .7rem;
+  font-size: .8rem;
+}
+
+/* ── 11. Carrito ────────────────────────────────────────────── */
+
+/* Layout general del carrito (dos columnas) */
+.carrito-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Título grande del carrito */
+.titulo-carrito {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: -.03em;
+  margin-bottom: 1.4rem;
+  color: var(--texto-oscuro);
+}
+
+/* Lista de artículos: barras verdes */
+.lista-carrito {
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+}
+
+.item-carrito {
+  display: flex;
+  align-items: center;
+  background: var(--verde-oscuro);
+  border-radius: 8px;
+  padding: .7rem 1rem;
+  color: var(--texto-blanco);
+  gap: 1rem;
+  min-height: 52px;
+}
+
+.item-carrito-nombre {
+  flex: 1;
+  font-size: .95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-carrito-precio {
+  font-weight: 700;
+  font-size: .95rem;
+  white-space: nowrap;
+  margin-right: .3rem;
+}
+
+/* Botón de eliminar (círculo con X) */
+.btn-quitar {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, .7);
+  border-radius: 50%;
+  color: var(--texto-blanco);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: background .18s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.btn-quitar:hover {
+  background: rgba(255, 255, 255, .2);
+}
+
+/* Items vacíos (slots grises) */
+.item-carrito-vacio {
+  background: var(--verde-medio);
+  opacity: .45;
+}
+
+/* Panel de resumen (caja blanca derecha) */
+.panel-resumen {
+  background: var(--texto-blanco);
+  border-radius: var(--radio);
+  padding: 1.8rem;
+  box-shadow: var(--sombra-tarjeta);
+  border: 1px solid rgba(0, 0, 0, .06);
+}
+
+.resumen-total-label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--texto-oscuro);
+}
+
+.resumen-total-valor {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--texto-oscuro);
+}
+
+.resumen-fila-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.resumen-usuario {
+  font-size: .82rem;
+  color: var(--texto-gris);
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+
+.resumen-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+/* Tabla clásica del carrito (oculta, usamos la nueva layout arriba) */
+.tabla-carrito {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.tabla-carrito th,
+.tabla-carrito td {
+  padding: .75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.tabla-carrito th {
+  font-size: .8rem;
+  color: var(--texto-gris);
+  text-transform: uppercase;
+}
+
+.input-cantidad {
+  width: 60px;
+  padding: .3rem .5rem;
+  border: 1px solid var(--borde-suave);
+  border-radius: 6px;
+  text-align: center;
+  font-size: .9rem;
+}
+
+/* Resumen clásico (páginas que aún usen el diseño anterior) */
+.resumen-carrito {
+  background: var(--texto-blanco);
+  border-radius: var(--radio);
+  padding: 1.5rem;
+  box-shadow: var(--sombra);
+  max-width: 360px;
+  margin-left: auto;
+  border: 1px solid rgba(0, 0, 0, .06);
+}
+
+.resumen-fila {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: .5rem;
+  font-size: .95rem;
+}
+
+.resumen-total {
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-top: 2px solid var(--borde-suave);
+  padding-top: .75rem;
+  margin-top: .5rem;
+}
+
+/* ── 12. Formularios ────────────────────────────────────────── */
+.tarjeta-form {
+  background: var(--texto-blanco);
+  border-radius: var(--radio);
+  padding: 2rem;
+  max-width: 480px;
+  margin: 2rem auto;
+  box-shadow: var(--sombra-tarjeta);
+  border: 1px solid rgba(0, 0, 0, .06);
+}
+
+.form-titulo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--texto-oscuro);
+}
+
+.form-grupo {
+  margin-bottom: 1.1rem;
+}
+
+.form-grupo label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 700;
+  margin-bottom: .35rem;
+  color: var(--texto-oscuro);
+}
+
+.form-grupo input,
+.form-grupo select,
+.form-grupo textarea {
+  width: 100%;
+  padding: .6rem .85rem;
+  border: 2px solid var(--borde-suave);
+  border-radius: 8px;
+  font-size: .95rem;
+  font-family: var(--fuente);
+  transition: border-color .2s;
+  background: #fafafa;
+}
+
+.form-grupo input:focus,
+.form-grupo select:focus,
+.form-grupo textarea:focus {
+  outline: none;
+  border-color: var(--verde-oscuro);
+  background: #fff;
+}
+
+.form-grupo textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.form-pie {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--texto-gris);
+  margin-top: 1rem;
+}
+
+.form-pie a {
+  color: var(--verde-oscuro);
+  font-weight: 600;
+}
+
+.form-pie a:hover {
+  text-decoration: underline;
+}
+
+/* ── 13. Badges de estado ───────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: .2rem .7rem;
+  border-radius: 50px;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.badge-pendiente {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badge-confirmado {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.badge-en_preparacion {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.badge-listo {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-entregado {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.badge-cancelado {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── 14. Panel de administrador ─────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-tarjeta {
+  background: var(--texto-blanco);
+  border-radius: var(--radio);
+  padding: 1.3rem 1.5rem;
+  box-shadow: var(--sombra);
+  border: 1px solid rgba(0, 0, 0, .06);
+}
+
+.stat-numero {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--verde-oscuro);
+}
+
+.stat-label {
+  font-size: .82rem;
+  color: var(--texto-gris);
+  font-weight: 600;
+  margin-top: .2rem;
+}
+
+/* Tabla para admin */
+.tabla-admin {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--texto-blanco);
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: var(--sombra);
+  border: 1px solid rgba(0, 0, 0, .06);
+}
+
+.tabla-admin th {
+  background: #f9fafb;
+  padding: .7rem 1rem;
+  text-align: left;
+  font-size: .8rem;
+  text-transform: uppercase;
+  color: var(--texto-gris);
+  border-bottom: 1px solid var(--borde-suave);
+}
+
+.tabla-admin td {
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--borde-suave);
+  font-size: .9rem;
+}
+
+.tabla-admin tr:last-child td {
+  border-bottom: none;
+}
+
+.tabla-admin tr:hover td {
+  background: #f9fdf5;
+}
+
+/* ── 15. Toast ──────────────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--texto-oscuro);
+  color: var(--texto-blanco);
+  padding: .6rem 1.4rem;
+  border-radius: 50px;
+  font-size: .875rem;
+  font-weight: 600;
+  z-index: 999;
+  transition: transform .3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .25);
+}
+
+/* ── 16. Página vacía ───────────────────────────────────────── */
+.vacio {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--texto-gris);
+}
+
+.vacio-icono {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.vacio p {
+  margin-bottom: 1rem;
+}
+
+/* ── 17. Checkout ───────────────────────────────────────────── */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .carrito-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── 18. Responsive general ─────────────────────────────────── */
+@media (max-width: 600px) {
+  .navbar {
+    padding: .7rem 1rem;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .navbar-marca {
+    font-size: 1rem;
+    padding: .38rem .9rem;
+  }
+
+  .titulo-seccion {
+    font-size: 1.6rem;
+  }
+
+  .titulo-carrito {
+    font-size: 2rem;
+  }
+
+  .grid-productos {
+    grid-template-columns: repeat(2, 1fr);
+    gap: .8rem;
+  }
+
+  .tabla-carrito th:nth-child(3),
+  .tabla-carrito td:nth-child(3) {
+    display: none;
+  }
+}

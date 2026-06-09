@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block titulo %}Tu Carrito{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+
+  <h1 class="titulo-carrito">Tu Carrito</h1>
+
+  {% if articulos %}
+
+    <!-- ── Layout de dos columnas: lista izquierda / resumen derecha ── -->
+    <div class="carrito-layout">
+
+      <!-- ─── Columna izquierda: artículos ─── -->
+      <div>
+        <div class="lista-carrito" id="listaCarrito">
+          {% for art in articulos %}
+            <div class="item-carrito" id="item-{{ art.id }}">
+              <!-- Nombre y precio -->
+              <span class="item-carrito-nombre">{{ art.nombre }}</span>
+              <span class="item-carrito-precio">${{ "%.2f"|format(art.precio) }}</span>
+
+              <!-- Cantidad (oculta, usada para cálculos) -->
+              <input type="hidden" class="cant-oculta" value="{{ art.cantidad }}" data-id="{{ art.id }}">
+
+              <!-- Botón quitar -->
+              <button class="btn-quitar" onclick="quitarProducto('{{ art.id }}')" title="Quitar">
+                ✕
+              </button>
+            </div>
+          {% endfor %}
+
+          <!-- Slots vacíos decorativos (siempre se muestran 5 slots) -->
+          {% set total_mostrados = articulos|length %}
+          {% if total_mostrados < 5 %}
+            {% for i in range(5 - total_mostrados) %}
+              <div class="item-carrito item-carrito-vacio">
+                <span class="item-carrito-nombre"></span>
+                <span class="item-carrito-precio"></span>
+                <div class="btn-quitar" style="visibility:hidden;">✕</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- ─── Columna derecha: resumen de pago ─── -->
+      <div class="panel-resumen">
+        <div class="resumen-fila-total">
+          <span class="resumen-total-label">Total</span>
+          <span class="resumen-total-valor" id="totalGeneral">${{ "%.2f"|format(total) }}</span>
+        </div>
+
+        <!-- Usuario actual -->
+        {% if current_user.is_authenticated %}
+          <div class="resumen-usuario">
+            {{ current_user.nombre | upper }} ...
+          </div>
+        {% endif %}
+
+        <div class="resumen-acciones">
+          <!-- Botón continuar al pago -->
+          <a href="{{ url_for('confirmar_pedido') }}" class="btn btn-primario">
+            Continuar Con El Pago
+          </a>
+
+          <!-- Botón volver al menú -->
+          <a href="{{ url_for('inicio') }}" class="btn btn-secundario">
+            Volver Al Menú
+          </a>
+        </div>
+      </div>
+
+    </div><!-- fin carrito-layout -->
+
+  {% else %}
+    <!-- Carrito vacío -->
+    <div class="vacio">
+      <div class="vacio-icono">
+        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24"
+             fill="none" stroke="#9ca3af" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9"  cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+      </div>
+      <p>Tu carrito está vacío.</p>
+      <a href="{{ url_for('inicio') }}" class="btn btn-primario" style="max-width:220px;margin:0 auto;">
+        Ver el menú
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  // Elimina un producto del carrito con AJAX
+  async function quitarProducto(id) {
+    const respuesta = await fetch(`/carrito/quitar/${id}`, { method: 'POST' });
+    const datos = await respuesta.json();
+    if (datos.ok) {
+      // Quita el item de la lista
+      const item = document.getElementById(`item-${id}`);
+      if (item) item.remove();
+
+      // Actualiza el total y contador
+      document.getElementById('totalGeneral').textContent = `$${datos.total.toFixed(2)}`;
+      document.getElementById('cartCount').textContent = datos.count;
+
+      mostrarToast('Producto eliminado');
+    }
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block titulo %}Menú{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+
+  <h1 class="titulo-seccion">Nuestro Menú</h1>
+
+  <!-- ── Filtros por categoría ── -->
+  <div class="filtros">
+    <!-- "Todos" sin filtro activo -->
+    <a href="{{ url_for('inicio') }}"
+       class="filtro-btn {% if not cat_activa %}activo{% endif %}">
+      Todos
+    </a>
+
+    <!-- Un botón por cada categoría -->
+    {% for cat in categorias %}
+      <a href="{{ url_for('inicio', categoria=cat.id) }}"
+         class="filtro-btn {% if cat_activa == cat.id %}activo{% endif %}">
+        {{ cat.nombre }}
+      </a>
+    {% endfor %}
+  </div>
+
+
+  <!-- ── Cuadrícula de productos ── -->
+  {% if productos %}
+    <div class="grid-productos">
+      {% for p in productos %}
+        <div class="tarjeta">
+
+          <!-- Imagen del producto -->
+          {% if p.imagen %}
+            <img src="{{ url_for('static', filename=p.imagen) }}"
+                 alt="{{ p.nombre }}" class="tarjeta-imagen">
+          {% else %}
+            <!-- Imagen de reemplazo si no hay foto -->
+            <div class="tarjeta-imagen" style="display:flex;align-items:center;justify-content:center;background:#d8ecbc;"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                   fill="none" stroke="#8aad5a" stroke-width="1.5"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11l18-5v12L3 14v-3z"/>
+                <path d="M11.6 16.8a3 1.5 0 1 0 3.8-2.4"/>
+              </svg>
+            </div>
+          {% endif %}
+
+          <div class="tarjeta-cuerpo">
+            <div class="tarjeta-nombre">{{ p.nombre }}</div>
+            <div class="tarjeta-desc">{{ p.descripcion or '' }}</div>
+
+            <!-- Precio (con tachado si tiene oferta) -->
+            <div class="tarjeta-precio">
+              ${{ "%.2f"|format(p.precio_final) }}
+              {% if p.en_oferta %}
+                <span class="precio-original">${{ "%.2f"|format(p.precio) }}</span>
+              {% endif %}
+            </div>
+
+            <!-- Botón de agregar (usa clase btn-agregar para el JS global) -->
+            {% if p.disponible %}
+              <button class="btn btn-primario btn-agregar" data-id="{{ p.id }}">
+                + Agregar
+              </button>
+            {% else %}
+              <button class="btn btn-secundario" disabled>Sin stock</button>
+            {% endif %}
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <!-- Mensaje cuando no hay productos en la categoría -->
+    <div class="vacio">
+      <div class="vacio-icono">🥗</div>
+      <p>No hay productos en esta categoría por ahora.</p>
+      <a href="{{ url_for('inicio') }}" class="btn btn-secundario" style="max-width:220px;margin:0 auto;">Ver todo el menú</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

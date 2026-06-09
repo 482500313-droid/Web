@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- El título cambia según la página -->
+  <title>{% block titulo %}{{ nombre }}{% endblock %} — {{ nombre }}</title>
+
+  <!-- Hoja de estilos principal -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+<!-- ─── BARRA DE NAVEGACIÓN ─────────────────────────────────── -->
+<nav class="navbar">
+
+  <!-- Logo / nombre del negocio (sin emoji, con caja negra redondeada) -->
+  <a href="{{ url_for('inicio') }}" class="navbar-marca">
+    {{ nombre }}
+  </a>
+
+  <!-- Links del lado derecho -->
+  <div class="navbar-links">
+    {% if current_user.is_authenticated %}
+      {% if current_user.es_admin %}
+        <a href="{{ url_for('panel_admin') }}">Admin</a>
+      {% endif %}
+      <a href="{{ url_for('mis_pedidos') }}">Mis pedidos</a>
+      <a href="{{ url_for('salir') }}" class="btn-usuario">Salir</a>
+    {% else %}
+      <a href="{{ url_for('iniciar_sesion') }}" class="btn-usuario">Usuario</a>
+      <a href="{{ url_for('registro') }}">Registro</a>
+    {% endif %}
+
+    <!-- Botón del carrito con ícono SVG y contador -->
+    <a href="{{ url_for('ver_carrito') }}" class="btn-carrito" title="Ver carrito">
+      <!-- Ícono carrito SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9"  cy="21" r="1"/>
+        <circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span id="cartCount">{{ cnt }}</span>
+    </a>
+  </div>
+
+</nav>
+<!-- ──────────────────────────────────────────────────────────── -->
+
+
+<!-- ─── MENSAJES FLASH ──────────────────────────────────────── -->
+{% with mensajes = get_flashed_messages(with_categories=true) %}
+  {% if mensajes %}
+    <div class="flashes">
+      {% for categoria, mensaje in mensajes %}
+        <div class="flash flash-{{ categoria }}">
+          {{ mensaje }}
+          <button onclick="this.parentElement.remove()">×</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+<!-- ──────────────────────────────────────────────────────────── -->
+
+
+<!-- ─── CONTENIDO DE CADA PÁGINA ───────────────────────────── -->
+{% block contenido %}{% endblock %}
+<!-- ──────────────────────────────────────────────────────────── -->
+
+
+<!-- ─── TOAST (notificación flotante) ──────────────────────── -->
+<div id="toast"><span id="toastMsg"></span></div>
+
+
+<!-- ─── JAVASCRIPT GLOBAL ───────────────────────────────────── -->
+<script>
+  // Cierra los mensajes flash después de 5 segundos
+  setTimeout(() => {
+    document.querySelectorAll('.flash').forEach(el => el.remove());
+  }, 5000);
+
+  // Muestra una notificación flotante
+  function mostrarToast(mensaje) {
+    document.getElementById('toastMsg').textContent = mensaje;
+    const toast = document.getElementById('toast');
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    setTimeout(() => {
+      toast.style.transform = 'translateX(-50%) translateY(80px)';
+    }, 2800);
+  }
+
+  // Agregar al carrito con AJAX (sin recargar la página)
+  document.addEventListener('click', async function(evento) {
+    const boton = evento.target.closest('.btn-agregar[data-id]');
+    if (!boton) return;
+
+    evento.preventDefault();
+
+    // Llamada al servidor
+    const respuesta = await fetch(`/carrito/agregar/${boton.dataset.id}`, { method: 'POST' });
+    const datos = await respuesta.json();
+
+    if (datos.ok) {
+      // Actualiza el contador del carrito en el navbar
+      document.getElementById('cartCount').textContent = datos.count;
+      mostrarToast(datos.msg);
+
+      // Animación visual del botón
+      boton.textContent = '✓ Agregado';
+      setTimeout(() => { boton.textContent = '+ Agregar'; }, 1200);
+    }
+  });
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

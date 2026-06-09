@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block titulo %}Confirmar Pedido{% endblock %}
+
+{% block contenido %}
+<div class="contenedor">
+
+  <h1 class="titulo-seccion">Confirmar Pedido</h1>
+
+  <div class="checkout-grid">
+
+    <!-- ── Izquierda: Resumen de lo que se va a pedir ── -->
+    <div>
+      <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem;">Resumen</h2>
+      <table class="tabla-carrito">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cant.</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for art in articulos %}
+          <tr>
+            <td>{{ art.nombre }}</td>
+            <td>{{ art.cantidad }}</td>
+            <td>${{ "%.2f"|format(art.subtotal) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Derecha: Formulario para completar el pedido ── -->
+    <div>
+      <form method="POST">
+        <div style="background:var(--color-superficie);border-radius:var(--radio);padding:1.5rem;box-shadow:var(--sombra);">
+
+          <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1.2rem;">Datos del pedido</h2>
+
+          <!-- Método de pago -->
+          <div class="form-grupo">
+            <label for="metodo_pago">Método de pago</label>
+            <select id="metodo_pago" name="metodo_pago">
+              <option value="efectivo">Efectivo al recibir</option>
+              <option value="tarjeta">Tarjeta (en caja)</option>
+              <option value="stripe">Pago en línea (Stripe)</option>
+            </select>
+          </div>
+
+          <!-- Notas adicionales -->
+          <div class="form-grupo">
+            <label for="notas">Notas (opcional)</label>
+            <textarea id="notas" name="notas"
+                      placeholder="Ej: sin cebolla, extra salsa..."></textarea>
+          </div>
+
+          <!-- Total a pagar -->
+          <div class="resumen-fila resumen-total" style="margin-bottom:1rem;">
+            <span>Total</span>
+            <span>${{ "%.2f"|format(total) }}</span>
+          </div>
+
+          <!-- Botón de confirmar -->
+          <button type="submit" class="btn btn-primario">
+            Confirmar pedido
+          </button>
+
+          <a href="{{ url_for('ver_carrito') }}"
+             class="btn btn-secundario"
+             style="display:block;text-align:center;margin-top:.5rem;">
+            Regresar al carrito
+          </a>
+
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

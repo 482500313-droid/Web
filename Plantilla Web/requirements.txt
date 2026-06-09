@@ -1,0 +1,8 @@
+flask
+flask-sqlalchemy
+flask-login
+flask-dance
+stripe
+Pillow
+python-dotenv
+requests
